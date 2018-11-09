@@ -11,6 +11,7 @@ app = Flask(__name__)
 node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
+
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
     values = request.get_json()
@@ -92,6 +93,37 @@ def retrieve_chain():
         'blockchain': blockchain.chain,
         'length': len(blockchain.chain),
     }
+    return jsonify(response), 200
+
+@app.route('/nodes/list', methods=['GET'])
+def retrieve_all_nodes():
+    courrent_list = list(blockchain.nodes)
+    """
+    current_list의 노드들의 검증 -> /check 호출
+    """
+    response = {
+        "message":"Total nodes list",
+        "total_nodes": "courrent_list"
+
+    }
+
+    return jsonify(response), 201
+
+@app.route('/check', methods=['GET'])
+def node_check():
+    response = {
+        'result':'OK',
+    }
+
+    return jsonify(response), 200
+
+@app.route('/getinfo/<path:blockid>', methods=['GET'])
+def retrieve_node_info(blockid):
+    # blockchain.chain[int(blockid) - 1]
+    response = {
+        "message" : f"Block[{blockid}]'s information",
+    }
+
     return jsonify(response), 200
 
 if __name__ == '__main__':
